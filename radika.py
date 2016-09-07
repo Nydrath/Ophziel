@@ -8,9 +8,6 @@ import socket
 import string
 import urllib2
 
-from PIL import Image
-from imgurpython import ImgurClient
-
 import decks
 
 
@@ -46,8 +43,6 @@ class Bot:
         client_id = '05c4e4c8869eb82'
         client_secret =  '711339dbcc785ad5d2da165e9bf6b22f0f4b8136'
         self.imgurclient = ImgurClient(client_id, client_secret)
-
-        self.runeworker = None
 
     def connect(self):
         self.socket.connect((self.host, self.port))
@@ -117,59 +112,6 @@ class Bot:
                         else:
                             card = random.choice(deck)
                     self.sendmsg(channel, name+": "+card)
-
-    def checkrunes(self):
-        if self.runeworker != None:
-            if not self.runeworker.done:
-                self.runeworker.work()
-            else:
-                upload = self.imgurclient.upload_from_path(os.getcwd()+"/runethrow.png")
-                self.sendmsg(self.runeworker.channel, self.runeworker.querent+": "+upload['link'])
-                self.runeworker = None
-
-class RuneWorker:
-    RUNEWIDTH = 149
-    RUNEHEIGHT = 197
-    IMAGE_WIDTH = RUNEWIDTH*5
-    IMAGE_HEIGHT = RUNEHEIGHT*2
-
-    # This class relies on each function happening fast enough that the IRC won't disconnect the bot, to simulate nonblocking.
-    # As such, it isn't guaranteed portable anymore. Ugly, but only way I know of without using subprocess.
-
-    def __init__(self, channel, querent, runes):
-        self.done = False
-        self.channel = channel
-        self.querent = querent
-        self.images = []
-        self.runenames = runes
-        self.positions = []
-        self.background = Image.new('RGB', (self.IMAGE_WIDTH, self.IMAGE_HEIGHT), (0,0,0))
-
-    def work(self):
-        if len(self.runenames) > 0:
-            # We're not done opening all the runes yet, unpack the next one
-            rune = self.runenames.pop(0)
-            index = decks.RUNES.index(rune)
-            name = "[{0}] ".format(index+1) + rune.split()[0] + ".png"
-            self.images.append(Image.open("Runes/"+name))
-        elif len(self.images) > 0:
-            # We're not done pasting all the images yet, paste the next one
-            while True:
-                x, y = random.randint(1, self.IMAGE_WIDTH-self.RUNEWIDTH), random.randint(1, self.IMAGE_HEIGHT-self.RUNEHEIGHT)
-                colliding = False
-                for otherx, othery in self.positions:
-                    if x in range(otherx-self.RUNEWIDTH-1, otherx+self.RUNEWIDTH+1) and y in range(othery-self.RUNEHEIGHT-1, othery+self.RUNEHEIGHT+1):
-                        colliding = True
-                        break
-                if not colliding:
-                    break
-            # We have the future position of this rune
-            self.positions.append((x, y))
-            self.background.paste(self.images.pop(0), (x, y))
-        else:
-            self.background.save("runethrow.png")
-            self.done = True
-            
 
 radika = Bot()
 radika.connect()
