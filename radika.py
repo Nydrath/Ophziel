@@ -40,10 +40,6 @@ class Bot:
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        client_id = '05c4e4c8869eb82'
-        client_secret =  '711339dbcc785ad5d2da165e9bf6b22f0f4b8136'
-        self.imgurclient = ImgurClient(client_id, client_secret)
-
     def connect(self):
         self.socket.connect((self.host, self.port))
         self.send("NICK {0}".format(self.nickname))
