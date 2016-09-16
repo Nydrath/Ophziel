@@ -13,13 +13,6 @@ from imgurpython import ImgurClient
 
 import decks
 
-'''
-Manifest, Ophziel
-Give counsel to those that need it
-Give truth to those that ask for it
-Come!
-'''
-
 def parsemsg(s):
     # Stolen from Twisted. Parses a message to it's prefix, command and arguments.
     prefix = ''
