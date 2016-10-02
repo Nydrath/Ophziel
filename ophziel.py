@@ -102,7 +102,8 @@ class Bot:
                 inputstring = inputstring[:-2]
                 if self.nickname.lower() in inputstring.lower() or alwaysTalk:
                     time.sleep(0.8)
-                    if "website" in inputstring.lower():
+#                    if "website" in inputstring.lower():
+                    if False:
                         card = urllib2.urlopen("http://www.randomwebsite.com/cgi-bin/random.pl").geturl()
                     else:
                         if "rw" in inputstring.lower():
@@ -174,6 +175,7 @@ radika = Bot()
 radika.connect()
 time.sleep(2)
 radika.join("#/div/ination")
+radika.join("#ophziel")
 radika.socket.setblocking(False)
 t = time.time()
 while True:
