@@ -91,6 +91,7 @@ class Bot:
             if command == "PRIVMSG":
                 name = prefix[:prefix.index("!")]
                 name = name.replace("Chirobot", "C.")
+                name = name.replace("Deltabot", "D.")
 
                 channel = args[0]
                 if channel == self.nickname:
